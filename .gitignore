@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+.venv/
+venv/
+.env
+dist/
+build/
+
+# Editors and OS
+.DS_Store
+.idea/
+.vscode/
+
+# Design sources. The published icon and banner are the PNGs at the repo root.
+*.psd
+*.ai
+*.sketch
+*.fig
+*.xcf
+
+node_modules/

@@ -1,0 +1,23 @@
+[project]
+name = "devil-h3-nodes"
+version = "1.0.0"
+description = "ComfyUI nodes by ComfyUIdev. Devil H3 Character Sheet designs a MiniMax H3 character sheet: views, part references, and a layout guide."
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
+authors = [{ name = "ComfyUIdev" }]
+dependencies = []
+classifiers = [
+  "Operating System :: OS Independent",
+]
+
+[project.urls]
+Repository = "https://github.com/ComfyUIdev/devil-h3-nodes"
+Documentation = "https://github.com/ComfyUIdev/devil-h3-nodes"
+"Bug Tracker" = "https://github.com/ComfyUIdev/devil-h3-nodes/issues"
+
+[tool.comfy]
+PublisherId = "comfyuidev"
+DisplayName = "Devil H3 Nodes"
+Icon = "https://raw.githubusercontent.com/ComfyUIdev/devil-h3-nodes/main/icon.png"
+Banner = "https://raw.githubusercontent.com/ComfyUIdev/devil-h3-nodes/main/banner.png"
+requires-comfyui = ">=0.3.45"

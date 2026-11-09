@@ -1,0 +1,9 @@
+{
+  "name": "devil-h3-nodes",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "node --test tests/sheet_logic.test.mjs"
+  }
+}
