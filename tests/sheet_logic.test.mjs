@@ -14,6 +14,15 @@ import {
 } from "../web/sheet_state.js";
 import { planSheet } from "../web/sheet_layout.js";
 import { figurePlan } from "../web/sheet_figures.js";
+import {
+  CARD_MIN_PX,
+  NODE_OPEN_WIDTH,
+  VIEW_GRID_COLUMNS,
+  WIDGET_MAX_HEIGHT,
+  columnsForWidth,
+  estimateSheetHeight,
+  sheetFrame,
+} from "../web/sheet_metrics.js";
 
 function clone(overrides = {}) {
   const state = defaultState();
@@ -120,6 +129,23 @@ test("role visibility skips rear views for a face reference", () => {
   assert.deepEqual(viewsForRole("face", ["body_back", "face_front"]), ["face_front"]);
   assert.ok(viewsForRole("outfit_back", ["body_front", "body_left", "clothing_back"]).includes("body_left"));
   assert.ok(!viewsForRole("outfit_back", ["body_front", "body_left", "clothing_back"]).includes("body_front"));
+});
+
+test("widget frame fills a 560px node and scrolls only past the cap", () => {
+  assert.equal(NODE_OPEN_WIDTH, 560);
+  assert.equal(CARD_MIN_PX, 96);
+  assert.equal(VIEW_GRID_COLUMNS, "repeat(auto-fill, minmax(96px, 1fr))");
+  assert.ok(columnsForWidth(560) >= 5);
+  assert.equal(columnsForWidth(110), 1);
+  const wide = estimateSheetHeight(13, 560);
+  const narrow = estimateSheetHeight(13, 110);
+  assert.ok(narrow > wide);
+  const fitted = sheetFrame(480);
+  assert.equal(fitted.height, 480);
+  assert.equal(fitted.scroll, false);
+  const capped = sheetFrame(wide + 4000);
+  assert.equal(capped.height, WIDGET_MAX_HEIGHT);
+  assert.equal(capped.scroll, true);
 });
 
 test("figure plans point profiles the right way and outfits have no head", () => {

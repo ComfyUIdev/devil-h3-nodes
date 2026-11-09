@@ -18,40 +18,50 @@ import {
   presetName,
 } from "./sheet_state.js";
 import { drawFigure } from "./sheet_figures.js";
+import { VIEW_GRID_COLUMNS } from "./sheet_metrics.js";
 
 const STYLE_ID = "devil-h3-sheet-style";
 
 const CSS = `
-.dv-sheet{box-sizing:border-box;display:flex;flex-direction:column;gap:8px;width:100%;height:100%;min-height:0;padding:10px 12px 12px;overflow:auto;background:#120c0b;color:#fff7f4;font:12px/1.35 "Arial Narrow","Franklin Gothic Medium","Nimbus Sans Narrow","Liberation Sans Narrow",Impact,sans-serif;border-radius:0;}
+.dv-sheet{box-sizing:border-box;display:flex;flex-direction:column;align-self:stretch;justify-self:stretch;width:100%;min-width:0;height:100%;min-height:0;margin:0;padding:0;overflow-x:hidden;overflow-y:auto;background:#120c0b;color:#fff7f4;font:12px/1.35 "Arial Narrow","Franklin Gothic Medium","Nimbus Sans Narrow","Liberation Sans Narrow",Impact,sans-serif;border-radius:0;pointer-events:auto;}
+.dv-body{box-sizing:border-box;display:flex;flex-direction:column;flex:0 0 auto;gap:8px;width:100%;max-width:100%;min-width:0;padding:10px 12px 14px;}
 .dv-sheet *{box-sizing:border-box;border-radius:0;}
+.dv-mark,.dv-row,.dv-block,.dv-stage,.dv-wide{width:100%;max-width:100%;min-width:0;}
 .dv-mark{display:flex;align-items:stretch;gap:8px;margin:0;}
 .dv-bar{width:4px;background:#e25b45;flex:none;}
 .dv-mark h1{margin:0;color:#e6ff3a;font-size:18px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;line-height:1;}
 .dv-mark p{margin:2px 0 0;color:#c9b2ac;font-size:11px;letter-spacing:.04em;text-transform:uppercase;}
 .dv-row{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;}
-.dv-field{display:flex;flex-direction:column;gap:3px;min-width:0;}
+.dv-field{display:flex;flex-direction:column;gap:3px;flex:1 1 140px;min-width:0;max-width:100%;}
+.dv-wide{flex:1 1 100%;}
 .dv-field span,.dv-kicker{color:#c9b2ac;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
-.dv-sheet select,.dv-sheet input,.dv-sheet textarea{border:1px solid #5a3330;background:#1c1412;color:#fff7f4;font:12px/1.3 "Arial Narrow","Franklin Gothic Medium","Liberation Sans Narrow",sans-serif;padding:4px 6px;}
+.dv-sheet select,.dv-sheet input,.dv-sheet textarea{box-sizing:border-box;width:100%;max-width:100%;border:1px solid #5a3330;background:#1c1412;color:#fff7f4;font:12px/1.3 "Arial Narrow","Franklin Gothic Medium","Liberation Sans Narrow",sans-serif;padding:4px 6px;}
+.dv-sheet input[type="checkbox"]{width:auto;max-width:none;}
 .dv-sheet select:focus,.dv-sheet input:focus,.dv-sheet textarea:focus{outline:1px solid #e6ff3a;border-color:#e6ff3a;}
-.dv-sheet textarea{width:100%;min-height:72px;resize:vertical;}
-.dv-seg{display:inline-flex;border:1px solid #5a3330;}
+.dv-sheet textarea{min-height:72px;resize:vertical;}
+.dv-seg{display:inline-flex;border:1px solid #5a3330;max-width:100%;}
 .dv-seg button{height:26px;padding:0 10px;border:0;background:#1c1412;color:#c9b2ac;font:700 11px/1 "Arial Narrow","Franklin Gothic Medium",sans-serif;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;}
 .dv-seg button + button{border-left:1px solid #5a3330;}
 .dv-seg button.on{background:#e25b45;color:#1a100e;}
-.dv-views{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px;}
-.dv-view{display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px;border:1px solid #5a3330;background:#1c1412;color:#fff7f4;cursor:pointer;font:700 10px/1.15 "Arial Narrow","Franklin Gothic Medium",sans-serif;letter-spacing:.04em;text-transform:uppercase;}
+.dv-views{display:grid;grid-template-columns:${VIEW_GRID_COLUMNS};gap:6px;width:100%;max-width:100%;min-width:0;}
+.dv-view{display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;min-width:0;padding:4px;border:1px solid #5a3330;background:#1c1412;color:#fff7f4;cursor:pointer;font:700 10px/1.15 "Arial Narrow","Franklin Gothic Medium",sans-serif;letter-spacing:.04em;text-transform:uppercase;}
 .dv-view.on{border-color:#e6ff3a;background:#2a1814;color:#e6ff3a;}
 .dv-view:hover{border-color:#e25b45;}
 .dv-mini{width:56px;height:64px;background:#f7f4ef;display:block;}
 .dv-stage{background:#0e0c0b;border:1px solid #5a3330;padding:6px;}
-.dv-stage canvas{display:block;width:100%;height:280px;}
+.dv-stage canvas{display:block;width:100%;height:220px;}
 .dv-read{color:#e6ff3a;font-weight:700;letter-spacing:.06em;}
 .dv-note{color:#c9b2ac;font-size:11px;}
 .dv-error{color:#ffb1a3;font-size:11px;min-height:1em;}
 .dv-check{display:flex;align-items:center;gap:6px;color:#fff7f4;font-size:12px;}
 .dv-check input{accent-color:#e25b45;}
 .dv-block{display:flex;flex-direction:column;gap:6px;padding-top:4px;border-top:1px solid #3a2826;}
-.dv-grow{flex:1 1 160px;}
+.lg-node:has(.dv-sheet) .lg-node-widgets,
+.lg-node:has(.dv-sheet) [data-testid="node-widgets"]{box-sizing:border-box;width:100% !important;max-width:100% !important;min-width:0 !important;align-self:stretch !important;justify-self:stretch !important;grid-template-columns:minmax(0,1fr) !important;}
+.lg-node:has(.dv-sheet) .lg-node-widget:has(.dv-sheet),
+.lg-node:has(.dv-sheet) [data-widget-name="devil_h3_sheet"]{box-sizing:border-box;width:100% !important;max-width:100% !important;min-width:0 !important;align-self:stretch !important;justify-self:stretch !important;}
+.lg-node:has(.dv-sheet) .lg-node-widget:has(.dv-sheet) > *,
+.lg-node:has(.dv-sheet) [data-widget-name="devil_h3_sheet"] > *{box-sizing:border-box;width:100% !important;min-width:0 !important;height:100%;}
 `;
 
 const VIEW_TITLES = {
@@ -151,7 +161,7 @@ function fillSelect(select, pairs) {
 
 function paint(canvas, layout) {
   const cssWidth = canvas.clientWidth || 640;
-  const cssHeight = 280;
+  const cssHeight = canvas.clientHeight || 220;
   const ratio = window.devicePixelRatio || 1;
   canvas.width = Math.round(cssWidth * ratio);
   canvas.height = Math.round(cssHeight * ratio);
@@ -207,7 +217,9 @@ export function createSheetView({ read, writeState: persistState, writeOptions, 
     }
   }
   const root = el("section", "dv-sheet");
+  const body = el("div", "dv-body");
   root.setAttribute("aria-label", "Devil H3 character sheet");
+  root.append(body);
 
   const mark = el("div", "dv-mark");
   const titles = el("div");
@@ -217,6 +229,7 @@ export function createSheetView({ read, writeState: persistState, writeOptions, 
   const preset = el("select");
   fillSelect(preset, [...Object.keys(PRESETS), "custom"].map((name) => [name, PRESET_TITLES[name]]));
   const presetField = field("Preset", preset);
+  presetField.classList.add("dv-wide");
 
   const views = el("div", "dv-views");
   const viewButtons = new Map();
@@ -410,7 +423,7 @@ export function createSheetView({ read, writeState: persistState, writeOptions, 
     field("Footwear", footwear),
   );
 
-  root.append(mark, presetField, views, sizeRow, optionRow, stage, hint, error, notes, roles, choices, rawBox);
+  body.append(mark, presetField, views, sizeRow, optionRow, stage, hint, error, notes, roles, choices, rawBox);
 
   function refresh() {
     const model = read();
