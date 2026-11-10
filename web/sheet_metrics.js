@@ -29,3 +29,22 @@ export function sheetFrame(contentHeight, maxHeight = WIDGET_MAX_HEIGHT) {
   const height = Math.min(raw, maxHeight);
   return { height, scroll: raw > maxHeight, maxHeight };
 }
+
+/** Classic LiteGraph DOM widgets sit in an overlay inset by this margin. */
+export const CLASSIC_WIDGET_MARGIN = 10;
+
+export function classicOverlayBox(nodeWidth, slotHeight, margin = CLASSIC_WIDGET_MARGIN) {
+  const width = Math.max(0, Math.round(nodeWidth) - margin * 2);
+  const height = Math.max(0, Math.round(slotHeight) - margin * 2);
+  return { width, height };
+}
+
+export function shouldFitNewNode(size) {
+  const width = Number(size?.[0]) || 0;
+  const height = Number(size?.[1]) || 0;
+  return width < 400 || height < 240;
+}
+
+export function openedNodeSize(frameHeight) {
+  return [NODE_OPEN_WIDTH, Math.ceil(frameHeight) + 36];
+}

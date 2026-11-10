@@ -16,12 +16,16 @@ import { planSheet } from "../web/sheet_layout.js";
 import { figurePlan } from "../web/sheet_figures.js";
 import {
   CARD_MIN_PX,
+  CLASSIC_WIDGET_MARGIN,
   NODE_OPEN_WIDTH,
   VIEW_GRID_COLUMNS,
   WIDGET_MAX_HEIGHT,
+  classicOverlayBox,
   columnsForWidth,
   estimateSheetHeight,
+  openedNodeSize,
   sheetFrame,
+  shouldFitNewNode,
 } from "../web/sheet_metrics.js";
 
 function clone(overrides = {}) {
@@ -146,6 +150,22 @@ test("widget frame fills a 560px node and scrolls only past the cap", () => {
   const capped = sheetFrame(wide + 4000);
   assert.equal(capped.height, WIDGET_MAX_HEIGHT);
   assert.equal(capped.scroll, true);
+});
+
+test("classic overlay tracks node width and keeps a saved size", () => {
+  const opened = openedNodeSize(sheetFrame(estimateSheetHeight(5, NODE_OPEN_WIDTH)).height);
+  assert.equal(opened[0], 560);
+  assert.ok(opened[1] > 240);
+  assert.equal(shouldFitNewNode([210, 80]), true);
+  assert.equal(shouldFitNewNode([980, 860]), false);
+  const slot = sheetFrame(estimateSheetHeight(13, 560)).height;
+  const overlay = classicOverlayBox(560, slot, CLASSIC_WIDGET_MARGIN);
+  assert.equal(overlay.width, 560 - CLASSIC_WIDGET_MARGIN * 2);
+  assert.equal(overlay.height, slot - CLASSIC_WIDGET_MARGIN * 2);
+  assert.ok(columnsForWidth(overlay.width) >= 4);
+  const saved = classicOverlayBox(980, 700);
+  assert.equal(saved.width, 960);
+  assert.ok(columnsForWidth(saved.width) > columnsForWidth(overlay.width));
 });
 
 test("figure plans point profiles the right way and outfits have no head", () => {

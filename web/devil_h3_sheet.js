@@ -12,7 +12,9 @@ import {
   NODE_OPEN_WIDTH,
   WIDGET_MAX_HEIGHT,
   estimateSheetHeight,
+  openedNodeSize,
   sheetFrame,
+  shouldFitNewNode,
 } from "./sheet_metrics.js";
 
 const NODE = "DevilH3CharacterSheet";
@@ -43,20 +45,31 @@ function frameFor(node) {
   return sheetFrame(estimateSheetHeight(views, nodeWidth(node)));
 }
 
+function vueHost(root) {
+  return root.closest?.(".lg-node") || null;
+}
+
 /**
- * Vue nodes size a widget column from its content, which collapses this
- * panel to one card. Stretch the host grid and the element to the node.
+ * Both renderers size the slot from addDOMWidget (getMinHeight / getHeight /
+ * computeSize). This only fixes the box the slot is mounted in.
+ * Vue nodes shrink the column to the card. The classic overlay is already
+ * positioned and scaled by the canvas, so its ancestors stay untouched.
  */
 function stretchSheet(root, node) {
   if (!root) return;
-  const width = Math.max(280, nodeWidth(node) - 24);
   root.style.boxSizing = "border-box";
-  root.style.width = "100%";
   root.style.minWidth = "0";
   root.style.alignSelf = "stretch";
   root.style.justifySelf = "stretch";
-  const host = root.closest?.(".lg-node") || null;
-  const grid = host?.querySelector?.("[data-testid='node-widgets'], .lg-node-widgets");
+  const host = vueHost(root);
+  if (!host) {
+    root.style.setProperty("width", "100%", "important");
+    root.style.setProperty("height", "100%", "important");
+    root.style.setProperty("max-width", "100%", "important");
+    root.style.setProperty("max-height", "100%", "important");
+    return;
+  }
+  const grid = host.querySelector?.("[data-testid='node-widgets'], .lg-node-widgets");
   if (grid) {
     grid.style.setProperty("box-sizing", "border-box", "important");
     grid.style.setProperty("width", "100%", "important");
@@ -69,12 +82,13 @@ function stretchSheet(root, node) {
       grid.style.setProperty("grid-template-rows", "minmax(0, 1fr)", "important");
     }
   }
-  const rendered = host?.clientWidth;
-  const pixelWidth = rendered > 80 ? Math.max(200, rendered - 16) : width;
+  const declared = parseFloat(getComputedStyle(host).getPropertyValue("--node-width"));
+  const pixelWidth = declared > 80 ? Math.max(200, declared - 20) : Math.max(280, nodeWidth(node) - 24);
   root.style.setProperty("width", `${pixelWidth}px`, "important");
   root.style.setProperty("max-width", "none", "important");
+  root.style.setProperty("height", "100%", "important");
   let el = root.parentElement;
-  while (el && el !== host && el !== document.body) {
+  while (el && el !== host) {
     el.style.setProperty("box-sizing", "border-box", "important");
     el.style.setProperty("width", "100%", "important");
     el.style.setProperty("max-width", "100%", "important");
@@ -83,6 +97,11 @@ function stretchSheet(root, node) {
     el.style.setProperty("justify-self", "stretch", "important");
     el = el.parentElement;
   }
+}
+
+function syncCollapsed(node, root) {
+  if (!root) return;
+  root.style.display = node.flags?.collapsed ? "none" : "";
 }
 
 function readModel(node) {
@@ -155,6 +174,7 @@ function attach(node) {
 
   let frameHeight = frameFor(node).height;
   function syncFrame() {
+    syncCollapsed(node, view.element);
     stretchSheet(view.element, node);
     const measured = view.element.querySelector(".dv-body")?.scrollHeight || 0;
     const estimated = estimateSheetHeight(readModel(node).state?.views?.length || 5, nodeWidth(node));
@@ -177,13 +197,13 @@ function attach(node) {
     },
     setValue() {},
     getMinHeight() {
-      return frameHeight;
+      return node.flags?.collapsed ? 0 : frameHeight;
     },
     getHeight() {
-      return frameHeight;
+      return node.flags?.collapsed ? 0 : frameHeight;
     },
     getMaxHeight() {
-      return WIDGET_MAX_HEIGHT;
+      return node.flags?.collapsed ? 0 : WIDGET_MAX_HEIGHT;
     },
     afterResize() {
       layoutPass.run();
@@ -192,17 +212,19 @@ function attach(node) {
   dom.serialize = false;
   if (dom.options) dom.options.serialize = false;
   dom.computeLayoutSize = () => ({
-    minHeight: frameHeight,
-    maxHeight: WIDGET_MAX_HEIGHT,
-    minWidth: 480,
+    minHeight: node.flags?.collapsed ? 0 : frameHeight,
+    maxHeight: node.flags?.collapsed ? 0 : WIDGET_MAX_HEIGHT,
+    minWidth: 0,
   });
-  dom.computeSize = (width) => [Math.max(width || 0, 320), frameHeight];
+  dom.computeSize = (width) => [Math.max(width || nodeWidth(node), 0), node.flags?.collapsed ? 0 : frameHeight];
   hideWidget(stateWidget);
   hideWidget(widget(node, "use_layout_image"));
   hideWidget(widget(node, "style"));
 
+  let keepSavedSize = false;
   const previousConfigure = node.onConfigure;
   node.onConfigure = function (...args) {
+    keepSavedSize = true;
     const result = previousConfigure?.apply(this, args);
     layoutPass.run();
     return result;
@@ -214,10 +236,10 @@ function attach(node) {
     return result;
   };
 
-  const bornSmall = (node.size?.[0] || 0) < 400 || (node.size?.[1] || 0) < 240;
   function fitNewNode() {
-    if (!bornSmall) return;
-    node.setSize?.([NODE_OPEN_WIDTH, frameHeight + 36]);
+    if (keepSavedSize || node.flags?.collapsed) return;
+    if (!shouldFitNewNode(node.size) && (node.size?.[0] || 0) >= NODE_OPEN_WIDTH) return;
+    node.setSize?.(openedNodeSize(frameHeight));
   }
 
   fitNewNode();
