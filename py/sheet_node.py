@@ -86,7 +86,7 @@ def pack_image(raw: bytes, width: int, height: int):
 
 
 class DevilH3CharacterSheet:
-    CATEGORY = "Devil Nodes/H3"
+    CATEGORY = "Devil Nodes/Image"
     DESCRIPTION = (
         "Design a still MiniMax H3 character sheet. One character photo plus "
         "up to three part references pass through unchanged. Wire prompt, width, "

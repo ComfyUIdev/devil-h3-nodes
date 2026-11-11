@@ -60,7 +60,7 @@ Keep the layout wire connected. When the switch is off, `layout_image` is empty 
 
 ## What the node does
 
-In the node menu, open **Devil Nodes**, then **H3**, and add **Devil H3 Character Sheet**.
+In the node menu, open **Devil Nodes**, then **Image**, and add **Devil H3 Character Sheet**.
 
 | Control | What it does |
 | --- | --- |

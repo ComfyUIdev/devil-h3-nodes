@@ -32,7 +32,7 @@ class NodeTests(unittest.TestCase):
         self.assertIn('WEB_DIRECTORY = "./web"', text)
         self.assertIn("DevilH3CharacterSheet", NODE_CLASS_MAPPINGS)
         self.assertEqual(NODE_DISPLAY_NAME_MAPPINGS["DevilH3CharacterSheet"], "Devil H3 Character Sheet")
-        self.assertEqual(DevilH3CharacterSheet.CATEGORY, "Devil Nodes/H3")
+        self.assertEqual(DevilH3CharacterSheet.CATEGORY, "Devil Nodes/Image")
         self.assertEqual(
             list(DevilH3CharacterSheet.RETURN_NAMES),
             [
