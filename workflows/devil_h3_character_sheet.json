@@ -1,0 +1,1154 @@
+{
+  "id": "devil-h3-character-sheet",
+  "revision": 0,
+  "last_node_id": 19,
+  "last_link_id": 26,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "MarkdownNote",
+      "pos": [
+        40,
+        40
+      ],
+      "size": [
+        420,
+        640
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "## Devil H3 Character Sheet\n\nWire the designer into native MiniMax H3:\n\n| Designer output | H3 input |\n| --- | --- |\n| prompt, width, height | prompt, width, height |\n| character_image | ref_images.ref_image_0 |\n| layout_image | ref_images.ref_image_1 |\n| reference_image_1/2/3 | ref_images.ref_image_2/3/4 |\n\nPicture numbers skip empty images. Leave **Pass layout image** off until a guide helps. The optional Load Image nodes are bypassed until you turn them on and pick files.\n\nSet the CLIP loader type to **minimax**. Use an H3 text encoder, not a Music3 encoder.\n\nSuggested files:\n\n- diffusion: DasiwaMinimaxH3_dasiwaHybridV4_int8.safetensors\n- text encoder: qwen3vl_32b_minimax_h3_int8_convrot.safetensors\n- VAE: minimax_h3_video_vae_int8_convrot.safetensors\n- LoRA on: pika_h3_flex_ref2va_v1_bf16.safetensors\n- LoRA off: pika_h3_flex_fl2va_v1_bf16.safetensors\n\nThis graph samples 5 frames and saves the first frame. The Power Lora Loader node needs rgthree-comfy. Weights are not included.\n"
+      ],
+      "title": "Devil H3 sheet"
+    },
+    {
+      "id": 2,
+      "type": "LoadImage",
+      "pos": [
+        500,
+        40
+      ],
+      "size": [
+        320,
+        320
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            1
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "character.png",
+        "image"
+      ],
+      "title": "Character image"
+    },
+    {
+      "id": 3,
+      "type": "LoadImage",
+      "pos": [
+        500,
+        400
+      ],
+      "size": [
+        320,
+        320
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            2
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "reference-1.png",
+        "image"
+      ],
+      "title": "Reference 1"
+    },
+    {
+      "id": 4,
+      "type": "LoadImage",
+      "pos": [
+        500,
+        760
+      ],
+      "size": [
+        320,
+        320
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            3
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "reference-2.png",
+        "image"
+      ],
+      "title": "Reference 2"
+    },
+    {
+      "id": 5,
+      "type": "LoadImage",
+      "pos": [
+        500,
+        1120
+      ],
+      "size": [
+        320,
+        320
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            4
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "reference-3.png",
+        "image"
+      ],
+      "title": "Reference 3"
+    },
+    {
+      "id": 6,
+      "type": "DevilH3CharacterSheet",
+      "pos": [
+        880,
+        40
+      ],
+      "size": [
+        980,
+        860
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "character_image",
+          "type": "IMAGE",
+          "link": 1
+        },
+        {
+          "name": "reference_image_1",
+          "type": "IMAGE",
+          "link": 2,
+          "shape": 7
+        },
+        {
+          "name": "reference_image_2",
+          "type": "IMAGE",
+          "link": 3,
+          "shape": 7
+        },
+        {
+          "name": "reference_image_3",
+          "type": "IMAGE",
+          "link": 4,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            5
+          ]
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "links": [
+            6
+          ]
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "links": [
+            7
+          ]
+        },
+        {
+          "name": "character_image",
+          "type": "IMAGE",
+          "links": [
+            8
+          ]
+        },
+        {
+          "name": "layout_image",
+          "type": "IMAGE",
+          "links": [
+            9
+          ]
+        },
+        {
+          "name": "reference_image_1",
+          "type": "IMAGE",
+          "links": [
+            10
+          ]
+        },
+        {
+          "name": "reference_image_2",
+          "type": "IMAGE",
+          "links": [
+            11
+          ]
+        },
+        {
+          "name": "reference_image_3",
+          "type": "IMAGE",
+          "links": [
+            12
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "devil-h3-nodes",
+        "ver": "1.0.0",
+        "Node name for S&R": "DevilH3CharacterSheet"
+      },
+      "widgets_values": [
+        "{\"version\":1,\"views\":[\"face_front\",\"face_left\",\"body_front\",\"body_left\",\"body_back\"],\"size\":{\"mode\":\"auto\",\"panel_height\":1120,\"width\":2208,\"height\":1280},\"notes\":{},\"roles\":{\"reference_image_1\":\"same_character\",\"reference_image_2\":\"same_character\",\"reference_image_3\":\"same_character\"},\"hands\":\"follow\",\"outfit_shape\":\"follow\",\"footwear\":\"follow\"}",
+        false,
+        "none"
+      ],
+      "title": "Devil H3 Character Sheet",
+      "color": "#e25b45",
+      "bgcolor": "#1c1412"
+    },
+    {
+      "id": 7,
+      "type": "UNETLoader",
+      "pos": [
+        1960,
+        40
+      ],
+      "size": [
+        420,
+        90
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            13
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "Node name for S&R": "UNETLoader"
+      },
+      "widgets_values": [
+        "DasiwaMinimaxH3_dasiwaHybridV4_int8.safetensors",
+        "default"
+      ]
+    },
+    {
+      "id": 8,
+      "type": "CLIPLoader",
+      "pos": [
+        1960,
+        160
+      ],
+      "size": [
+        420,
+        110
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            14
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "Node name for S&R": "CLIPLoader"
+      },
+      "widgets_values": [
+        "qwen3vl_32b_minimax_h3_int8_convrot.safetensors",
+        "minimax",
+        "default"
+      ]
+    },
+    {
+      "id": 9,
+      "type": "VAELoader",
+      "pos": [
+        1960,
+        300
+      ],
+      "size": [
+        420,
+        80
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            17,
+            18
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "minimax_h3_video_vae_int8_convrot.safetensors"
+      ]
+    },
+    {
+      "id": 10,
+      "type": "Power Lora Loader (rgthree)",
+      "pos": [
+        1960,
+        420
+      ],
+      "size": [
+        460,
+        280
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 13
+        },
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 14
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            15
+          ]
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            16
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "rgthree-comfy",
+        "Node name for S&R": "Power Lora Loader (rgthree)"
+      },
+      "widgets_values": [
+        {},
+        {
+          "type": "PowerLoraLoaderHeaderWidget"
+        },
+        {
+          "on": false,
+          "lora": "pika_h3_flex_fl2va_v1_bf16.safetensors",
+          "strength": 1,
+          "strengthTwo": null
+        },
+        {
+          "on": true,
+          "lora": "pika_h3_flex_ref2va_v1_bf16.safetensors",
+          "strength": 1,
+          "strengthTwo": null
+        },
+        {},
+        ""
+      ],
+      "title": "Pika Ref2VA"
+    },
+    {
+      "id": 11,
+      "type": "RandomNoise",
+      "pos": [
+        2460,
+        40
+      ],
+      "size": [
+        260,
+        90
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "NOISE",
+          "type": "NOISE",
+          "links": [
+            21
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "Node name for S&R": "RandomNoise"
+      },
+      "widgets_values": [
+        123456789,
+        "fixed"
+      ],
+      "title": "Seed"
+    },
+    {
+      "id": 12,
+      "type": "KSamplerSelect",
+      "pos": [
+        2460,
+        160
+      ],
+      "size": [
+        260,
+        70
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SAMPLER",
+          "type": "SAMPLER",
+          "links": [
+            22
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "Node name for S&R": "KSamplerSelect"
+      },
+      "widgets_values": [
+        "euler"
+      ]
+    },
+    {
+      "id": 13,
+      "type": "ManualSigmas",
+      "pos": [
+        2460,
+        260
+      ],
+      "size": [
+        360,
+        70
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SIGMAS",
+          "type": "SIGMAS",
+          "links": [
+            23
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "Node name for S&R": "ManualSigmas"
+      },
+      "widgets_values": [
+        "1.0, 0.86, 0.72, 0.58, 0.44, 0.30, 0.16, 0.06, 0.0"
+      ],
+      "title": "8 intervals"
+    },
+    {
+      "id": 14,
+      "type": "MiniMaxH3ReferenceToVideo",
+      "pos": [
+        2460,
+        380
+      ],
+      "size": [
+        340,
+        520
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 16
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 17
+        },
+        {
+          "name": "audio_vae",
+          "type": "VAE",
+          "link": null,
+          "shape": 7
+        },
+        {
+          "name": "ref_images.ref_image_0",
+          "type": "IMAGE",
+          "link": 8,
+          "shape": 7,
+          "label": "ref_image_0"
+        },
+        {
+          "name": "ref_images.ref_image_1",
+          "type": "IMAGE",
+          "link": 9,
+          "shape": 7,
+          "label": "ref_image_1"
+        },
+        {
+          "name": "ref_images.ref_image_2",
+          "type": "IMAGE",
+          "link": 10,
+          "shape": 7,
+          "label": "ref_image_2"
+        },
+        {
+          "name": "ref_videos.ref_video_0",
+          "type": "IMAGE",
+          "link": null,
+          "shape": 7
+        },
+        {
+          "name": "ref_video_audios.ref_video_audio_0",
+          "type": "AUDIO",
+          "link": null,
+          "shape": 7
+        },
+        {
+          "name": "ref_audios.ref_audio_0",
+          "type": "AUDIO",
+          "link": null,
+          "shape": 7
+        },
+        {
+          "name": "ref_audios.ref_audio_1",
+          "type": "AUDIO",
+          "link": null,
+          "shape": 7
+        },
+        {
+          "name": "ref_audios.ref_audio_2",
+          "type": "AUDIO",
+          "link": null,
+          "shape": 7
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "link": 5
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": 6
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": 7
+        },
+        {
+          "name": "ref_images.ref_image_3",
+          "type": "IMAGE",
+          "link": 11,
+          "shape": 7,
+          "label": "ref_image_3"
+        },
+        {
+          "name": "ref_images.ref_image_4",
+          "type": "IMAGE",
+          "link": 12,
+          "shape": 7,
+          "label": "ref_image_4"
+        },
+        {
+          "name": "ref_images.ref_image_5",
+          "type": "IMAGE",
+          "link": null,
+          "shape": 7
+        },
+        {
+          "name": "ref_images.ref_image_6",
+          "type": "IMAGE",
+          "link": null,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            19
+          ]
+        },
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            20
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "Node name for S&R": "MiniMaxH3ReferenceToVideo"
+      },
+      "widgets_values": [
+        "Prompt comes from Devil H3 Character Sheet.",
+        1280,
+        1280,
+        5,
+        "match"
+      ],
+      "title": "MiniMax H3"
+    },
+    {
+      "id": 15,
+      "type": "BasicGuider",
+      "pos": [
+        2860,
+        40
+      ],
+      "size": [
+        240,
+        70
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 15
+        },
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 19
+        }
+      ],
+      "outputs": [
+        {
+          "name": "GUIDER",
+          "type": "GUIDER",
+          "links": []
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "Node name for S&R": "BasicGuider"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 16,
+      "type": "SamplerCustomAdvanced",
+      "pos": [
+        2860,
+        150
+      ],
+      "size": [
+        270,
+        180
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "noise",
+          "type": "NOISE",
+          "link": 21
+        },
+        {
+          "name": "guider",
+          "type": "GUIDER",
+          "link": null
+        },
+        {
+          "name": "sampler",
+          "type": "SAMPLER",
+          "link": 22
+        },
+        {
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 23
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 20
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "LATENT",
+          "links": [
+            24
+          ]
+        },
+        {
+          "name": "denoised_output",
+          "type": "LATENT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "Node name for S&R": "SamplerCustomAdvanced"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 17,
+      "type": "VAEDecode",
+      "pos": [
+        2860,
+        370
+      ],
+      "size": [
+        220,
+        70
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 24
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 18
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            25
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 18,
+      "type": "ImageFromBatch",
+      "pos": [
+        2860,
+        470
+      ],
+      "size": [
+        240,
+        90
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 25
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            26
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "Node name for S&R": "ImageFromBatch"
+      },
+      "widgets_values": [
+        0,
+        1
+      ],
+      "title": "First frame"
+    },
+    {
+      "id": 19,
+      "type": "SaveImage",
+      "pos": [
+        2860,
+        590
+      ],
+      "size": [
+        320,
+        270
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 26
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "devil-h3-sheet"
+      ],
+      "title": "Save sheet"
+    }
+  ],
+  "links": [
+    [
+      1,
+      2,
+      0,
+      6,
+      0,
+      "IMAGE"
+    ],
+    [
+      2,
+      3,
+      0,
+      6,
+      1,
+      "IMAGE"
+    ],
+    [
+      3,
+      4,
+      0,
+      6,
+      2,
+      "IMAGE"
+    ],
+    [
+      4,
+      5,
+      0,
+      6,
+      3,
+      "IMAGE"
+    ],
+    [
+      5,
+      6,
+      0,
+      14,
+      11,
+      "STRING"
+    ],
+    [
+      6,
+      6,
+      1,
+      14,
+      12,
+      "INT"
+    ],
+    [
+      7,
+      6,
+      2,
+      14,
+      13,
+      "INT"
+    ],
+    [
+      8,
+      6,
+      3,
+      14,
+      3,
+      "IMAGE"
+    ],
+    [
+      9,
+      6,
+      4,
+      14,
+      4,
+      "IMAGE"
+    ],
+    [
+      10,
+      6,
+      5,
+      14,
+      5,
+      "IMAGE"
+    ],
+    [
+      11,
+      6,
+      6,
+      14,
+      14,
+      "IMAGE"
+    ],
+    [
+      12,
+      6,
+      7,
+      14,
+      15,
+      "IMAGE"
+    ],
+    [
+      13,
+      7,
+      0,
+      10,
+      0,
+      "MODEL"
+    ],
+    [
+      14,
+      8,
+      0,
+      10,
+      1,
+      "CLIP"
+    ],
+    [
+      15,
+      10,
+      0,
+      15,
+      0,
+      "MODEL"
+    ],
+    [
+      16,
+      10,
+      1,
+      14,
+      0,
+      "CLIP"
+    ],
+    [
+      17,
+      9,
+      0,
+      14,
+      1,
+      "VAE"
+    ],
+    [
+      18,
+      9,
+      0,
+      17,
+      1,
+      "VAE"
+    ],
+    [
+      19,
+      14,
+      0,
+      15,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      20,
+      14,
+      1,
+      16,
+      4,
+      "LATENT"
+    ],
+    [
+      21,
+      11,
+      0,
+      16,
+      0,
+      "NOISE"
+    ],
+    [
+      22,
+      12,
+      0,
+      16,
+      2,
+      "SAMPLER"
+    ],
+    [
+      23,
+      13,
+      0,
+      16,
+      3,
+      "SIGMAS"
+    ],
+    [
+      24,
+      16,
+      0,
+      17,
+      0,
+      "LATENT"
+    ],
+    [
+      25,
+      17,
+      0,
+      18,
+      0,
+      "IMAGE"
+    ],
+    [
+      26,
+      18,
+      0,
+      19,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.7,
+      "offset": [
+        40,
+        40
+      ]
+    }
+  },
+  "version": 0.4
+}
